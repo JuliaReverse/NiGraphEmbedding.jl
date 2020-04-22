@@ -1,6 +1,6 @@
-export get_hessian_nilang, get_hessian_reversediff
+export get_hessian
 
-function get_hessian_nilang(params0::AbstractArray{T}) where T
+function get_hessian(params0::AbstractArray{T}) where T
     N = length(params0)
     params = Dual.(params0, zero(T))
     hes = zeros(T, N, N)

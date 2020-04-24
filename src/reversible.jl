@@ -56,11 +56,9 @@ end
         end
         var_and_mean_sq(v1, m1, d1)
         var_and_mean_sq(v2, m2, d2)
-        m1 -= identity(m2)
-        m1 += identity(0.1)
+        m1 -= m2 - 0.1
     end
-    out! += identity(v1)
-    out! += identity(v2)
+    out! += v1 + v2
     if (m1 > 0, ~)
         # to ensure mean(v2) > mean(v1)
         # if mean(v1)+0.1 - mean(v2) > 0, punish it.

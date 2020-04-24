@@ -34,7 +34,7 @@ function train(params, opt::NewtonTrustRegion)
         vec(view(params,:,msk)) .= x
         nm = sum(msk)*size(params, 1)
         i[] += 1
-        H .= reshape(reshape(get_hessian_nilang(params), size(params)..., size(params)...)[:,msk,:,msk], nm, nm)
+        H .= reshape(reshape(get_hessian(params), size(params)..., size(params)...)[:,msk,:,msk], nm, nm)
     end
     optimize(f, g!, h!, vec(params[:,msk]), opt)
     params

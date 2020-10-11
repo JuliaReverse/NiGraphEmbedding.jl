@@ -2,7 +2,7 @@
 @i function mean(out!, x)
     anc ← zero(out!)
     for i=1:length(x)
-        anc += identity(x[i])
+        anc += x[i]
     end
     mulint(out!, length(x))
 end
@@ -13,18 +13,23 @@ end
 the variance and mean value from squared values.
 """
 @i function var_and_mean_sq(var!, mean!, sqv::AbstractVector{T}) where T
-    sqmean ← zero(mean!)
+    @zeros T mean_sum var_sum
     @inbounds for i=1:length(sqv)
-        mean! += sqv[i] ^ 0.5
-        var! += identity(sqv[i])
+        mean_sum += sqv[i] ^ 0.5
+        var_sum += sqv[i]
     end
-    divint(mean!, length(sqv))
-    divint(var!, length(sqv))
-    sqmean += mean! ^ 2
-    var! -= identity(sqmean)
-    sqmean -= mean! ^ 2
-    mulint(var!, length(sqv))
-    divint(var!, length(sqv)-1)
+    mean! += mean_sum / length(sqv)
+    @routine begin
+        @zeros T var_anc1 var_anc2 sqmean
+        var_anc1 += var_sum / length(sqv)
+        sqmean += mean! ^ 2
+        var_anc1 -= sqmean
+        var_anc2 += var_anc1 * length(sqv)
+    end
+    var! += var_anc2 / (length(sqv)-1)
+    ~@routine
+    PUSH!(var_sum)
+    PUSH!(mean_sum)
 end
 
 """
@@ -32,19 +37,15 @@ Squared distance of two vertices.
 """
 @i @inline function sqdistance(dist!, x1::AbstractVector{T}, x2::AbstractVector) where T
     @invcheckoff @inbounds for i=1:length(x1)
-        x1[i] -= identity(x2[i])
+        x1[i] -= x2[i]
         dist! += x1[i] ^ 2
-        x1[i] += identity(x2[i])
+        x1[i] += x2[i]
     end
 end
 
 """The loss of graph embedding problem."""
 @i function embedding_loss(out!::T, x) where T
-    v1 ← zero(T)
-    m1 ← zero(T)
-    v2 ← zero(T)
-    m2 ← zero(T)
-    diff ← zero(T)
+    @zeros T v1 m1 v2 m2 diff
     d1 ← zeros(T, length(L1))
     d2 ← zeros(T, length(L2))
     @routine @invcheckoff begin
@@ -63,7 +64,7 @@ end
         # to ensure mean(v2) > mean(v1)
         # if mean(v1)+0.1 - mean(v2) > 0, punish it.
         out! += exp(m1)
-        out! -= identity(1)
+        out! -= 1
     end
     ~@routine
 end

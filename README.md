@@ -9,11 +9,6 @@ Solving the Petersen graph embedding problem.
 
 Open a Julia REPL and type `]` to enter `pkg` mode and then type
 ```julia pkg
-pkg> dev git@github.com:JuliaReverse/NiBundleAdjustment.jl.git
-pkg> add ForwardDiff Zygote Optim
-```
-
-Then in a bash shell, type the following command to run tests
-```bash
-$ julia test/runtests.jl
+pkg> dev git@github.com:JuliaReverse/NiGraphEmbedding.jl.git
+pkg> test NiGraphEmbedding
 ```

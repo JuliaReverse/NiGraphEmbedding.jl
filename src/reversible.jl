@@ -4,7 +4,7 @@
     for i=1:length(x)
         anc += x[i]
     end
-    mulint(out!, length(x))
+    mulint(out!, (@const length(x)))
 end
 
 """
@@ -18,15 +18,15 @@ the variance and mean value from squared values.
         mean_sum += sqv[i] ^ 0.5
         var_sum += sqv[i]
     end
-    mean! += mean_sum / length(sqv)
+    mean! += mean_sum / (@const length(sqv))
     @routine begin
         @zeros T var_anc1 var_anc2 sqmean
-        var_anc1 += var_sum / length(sqv)
+        var_anc1 += var_sum / (@const length(sqv))
         sqmean += mean! ^ 2
         var_anc1 -= sqmean
-        var_anc2 += var_anc1 * length(sqv)
+        var_anc2 += var_anc1 * (@const length(sqv))
     end
-    var! += var_anc2 / (length(sqv)-1)
+    var! += var_anc2 / (@const length(sqv)-1)
     ~@routine
     PUSH!(var_sum)
     PUSH!(mean_sum)

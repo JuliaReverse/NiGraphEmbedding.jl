@@ -13,7 +13,7 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 ForwardDiff = "0.10"
-NiLang = "0.9"
+NiLang = "0.8"
 Optim = "0.22"
 julia = "1.5"
 

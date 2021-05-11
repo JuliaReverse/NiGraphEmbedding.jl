@@ -9,6 +9,7 @@ using Optim
     Random.seed!(2)
     params = randn(5, 10)
     x = randn(5,10)
+    @test embedding_loss(0.0, x)[1] ≈ embedding_loss(x)
     @test grad(Grad(embedding_loss)(Val(1), 0.0, x)[3]) ≈ Zygote.gradient(embedding_loss, x)[1]
 end
 
